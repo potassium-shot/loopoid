@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn7ajgbdtsofe"]
+
+[ext_resource type="Script" path="res://scripts/root.gd" id="1_dfgmj"]
+
+[sub_resource type="GDScript" id="GDScript_eec2h"]
+resource_name = "OpenFileDialog"
+script/source = "extends FileDialog
+
+var _size: Vector2:
+	set(value):
+		if _size == value:
+			return
+		
+		_size = value
+		size = value
+
+func _ready():
+	current_dir = OS.get_system_dir(OS.SYSTEM_DIR_MUSIC)
+
+func _process(_p_delta: float):
+	if visible:
+		_size = DisplayServer.window_get_size()
+
+func _on_choose_file_button_pressed():
+	visible = true
+"
+
+[node name="Root" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dfgmj")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="OpenFileDialog" type="FileDialog" parent="."]
+mode = 2
+title = "Open a File"
+size = Vector2i(784, 500)
+unresizable = true
+borderless = true
+always_on_top = true
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.ogg ; Ogg Vorbis")
+script = SubResource("GDScript_eec2h")
+
+[node name="ChooseFileButton" type="Button" parent="."]
+layout_mode = 0
+offset_right = 279.0
+offset_bottom = 96.0
+text = "Ligma Pussy"
+
+[connection signal="file_selected" from="OpenFileDialog" to="." method="_on_open_file_dialog_file_selected"]
+[connection signal="pressed" from="ChooseFileButton" to="OpenFileDialog" method="_on_choose_file_button_pressed"]
