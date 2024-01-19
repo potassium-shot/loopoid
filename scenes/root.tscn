@@ -6,20 +6,12 @@
 resource_name = "OpenFileDialog"
 script/source = "extends FileDialog
 
-var _size: Vector2:
-	set(value):
-		if _size == value:
-			return
-		
-		_size = value
-		size = value
-
 func _ready():
 	current_dir = OS.get_system_dir(OS.SYSTEM_DIR_MUSIC)
-
-func _process(_p_delta: float):
-	if visible:
-		_size = DisplayServer.window_get_size()
+	size  = Vector2(
+		ProjectSettings.get_setting(&\"display/window/size/viewport_width\"),
+		ProjectSettings.get_setting(&\"display/window/size/viewport_height\"),
+	)
 
 func _on_choose_file_button_pressed():
 	visible = true
@@ -55,5 +47,72 @@ offset_right = 279.0
 offset_bottom = 96.0
 text = "Ligma Pussy"
 
+[node name="PlayerControlsMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 60
+
+[node name="PlayerControls" type="VBoxContainer" parent="PlayerControlsMargin"]
+layout_mode = 2
+
+[node name="SliderMargin" type="MarginContainer" parent="PlayerControlsMargin/PlayerControls"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="Slider" type="HSlider" parent="PlayerControlsMargin/PlayerControls/SliderMargin"]
+layout_mode = 2
+max_value = 1.0
+tick_count = 5
+
+[node name="PlayerControlButtons" type="HBoxContainer" parent="PlayerControlsMargin/PlayerControls"]
+layout_mode = 2
+
+[node name="BackwardButtonMargin" type="MarginContainer" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="BackwardButton" type="Button" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons/BackwardButtonMargin"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BACKWARD"
+
+[node name="PlayButtonMargin" type="MarginContainer" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="PlayButton" type="Button" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons/PlayButtonMargin"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PAUSE"
+
+[node name="ForwardButtonMargin" type="MarginContainer" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="ForwardButton" type="Button" parent="PlayerControlsMargin/PlayerControls/PlayerControlButtons/ForwardButtonMargin"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FORWARD"
+
 [connection signal="file_selected" from="OpenFileDialog" to="." method="_on_open_file_dialog_file_selected"]
 [connection signal="pressed" from="ChooseFileButton" to="OpenFileDialog" method="_on_choose_file_button_pressed"]
+[connection signal="pressed" from="PlayerControlsMargin/PlayerControls/PlayerControlButtons/BackwardButtonMargin/BackwardButton" to="." method="_on_seek_button_pressed" binds= [true]]
+[connection signal="pressed" from="PlayerControlsMargin/PlayerControls/PlayerControlButtons/PlayButtonMargin/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="PlayerControlsMargin/PlayerControls/PlayerControlButtons/ForwardButtonMargin/ForwardButton" to="." method="_on_seek_button_pressed" binds= [false]]
